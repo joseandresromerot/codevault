@@ -17,7 +17,11 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
       }
       setTokenReady(true)
     }
+
     fetchToken()
+    // Refresh every 50 minutes (token expires in 1 hour)
+    const interval = setInterval(fetchToken, 50 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   const [client, ssr] = useMemo(() => {

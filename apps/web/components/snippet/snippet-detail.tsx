@@ -2,8 +2,9 @@
 
 import { useQuery, useMutation } from "urql"
 import { GET_SNIPPET, DELETE_SNIPPET } from "@/lib/graphql/snippets"
-import { Copy, Check, Globe, Lock, ArrowLeft, Pencil, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { GET_COLLECTIONS, ADD_SNIPPET_TO_COLLECTION } from "@/lib/graphql/collections"
+import { Copy, Check, Globe, Lock, ArrowLeft, Pencil, Trash2, FolderPlus, ChevronDown } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -30,8 +31,29 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
   const router = useRouter()
   const [copied, setCopied] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [showCollections, setShowCollections] = useState(false)
+  const collectionsRef = useRef<HTMLDivElement>(null)
   const [{ data, fetching }] = useQuery({ query: GET_SNIPPET, variables: { slug } })
+  const [{ data: collectionsData }] = useQuery({ query: GET_COLLECTIONS })
   const [, deleteSnippet] = useMutation(DELETE_SNIPPET)
+  const [, addToCollection] = useMutation(ADD_SNIPPET_TO_COLLECTION)
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (collectionsRef.current && !collectionsRef.current.contains(e.target as Node)) {
+        setShowCollections(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
+
+  const handleAddToCollection = async (collectionId: string) => {
+    const { error } = await addToCollection({ collectionId, snippetId: data?.snippet?.id })
+    if (error) { toast.error("Failed to add to collection"); return }
+    toast.success("Added to collection")
+    setShowCollections(false)
+  }
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(data?.snippet?.code ?? "")
@@ -97,6 +119,39 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
             <Trash2 size={14} />
             {confirmDelete ? "Confirm delete" : "Delete"}
           </button>
+
+          {/* Add to collection dropdown */}
+          <div className="relative" ref={collectionsRef}>
+            <button
+              onClick={() => setShowCollections(!showCollections)}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-600 rounded-lg transition-colors"
+            >
+              <FolderPlus size={14} />
+              Add to
+              <ChevronDown size={12} />
+            </button>
+            {showCollections && (
+              <div className="absolute right-0 top-full mt-1 w-52 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-10 overflow-hidden">
+                {(collectionsData?.collections ?? []).length === 0 ? (
+                  <div className="px-4 py-3 text-xs text-zinc-500 text-center">
+                    No collections yet.{" "}
+                    <Link href="/dashboard/collections" className="text-emerald-400 hover:underline">Create one</Link>
+                  </div>
+                ) : (
+                  (collectionsData?.collections ?? []).map((col: any) => (
+                    <button
+                      key={col.id}
+                      onClick={() => handleAddToCollection(col.id)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                    >
+                      {col.name}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
           <Link
             href={`/dashboard/edit/${snippet.id}`}
             className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-600 rounded-lg transition-colors"
