@@ -2,18 +2,20 @@
 
 import { UrqlProvider, ssrExchange } from "@urql/next"
 import { cacheExchange, createClient, fetchExchange } from "urql"
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-  const tokenRef = useRef<string | null>(null)
+  const [token, setToken] = useState<string | null>(null)
+  const [tokenReady, setTokenReady] = useState(false)
 
   useEffect(() => {
     const fetchToken = async () => {
       const res = await fetch("/api/auth/token")
       if (res.ok) {
         const data = await res.json()
-        tokenRef.current = data.token
+        setToken(data.token ?? null)
       }
+      setTokenReady(true)
     }
     fetchToken()
   }, [])
@@ -24,13 +26,13 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
       url: process.env.NEXT_PUBLIC_API_URL + "/graphql",
       exchanges: [cacheExchange, ssr, fetchExchange],
       fetchOptions: () => ({
-        headers: tokenRef.current
-          ? { Authorization: `Bearer ${tokenRef.current}` }
-          : ({} as Record<string, string>),
+        headers: token ? { Authorization: `Bearer ${token}` } : ({} as Record<string, string>),
       }),
     })
     return [client, ssr]
-  }, [])
+  }, [token])
+
+  if (!tokenReady) return null
 
   return (
     <UrqlProvider client={client} ssr={ssr}>
