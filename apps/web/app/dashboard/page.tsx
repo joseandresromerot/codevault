@@ -18,7 +18,7 @@ const DashboardPage = async () => {
         </div>
         <Link
           href="/dashboard/new"
-          className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
         >
           <Plus size={16} />
           New snippet

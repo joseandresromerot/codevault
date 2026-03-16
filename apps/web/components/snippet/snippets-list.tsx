@@ -31,7 +31,7 @@ export const SnippetsList = () => {
         <p className="text-zinc-500 text-sm mb-6">Save your first code snippet to get started</p>
         <Link
           href="/dashboard/new"
-          className="bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+          className="bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
         >
           Create snippet
         </Link>

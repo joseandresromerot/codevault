@@ -48,7 +48,7 @@ export const SnippetCard = ({ title, description, code, language, visibility, sl
         {/* Header */}
         <div className="px-4 py-3 flex items-start justify-between gap-3 border-b border-zinc-800">
           <div className="min-w-0">
-            <h3 className="font-semibold text-white text-sm truncate group-hover:text-indigo-400 transition-colors">
+            <h3 className="font-semibold text-white text-sm truncate group-hover:text-emerald-400 transition-colors">
               {title}
             </h3>
             {description && (

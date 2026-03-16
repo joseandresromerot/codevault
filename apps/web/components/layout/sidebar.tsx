@@ -25,7 +25,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
       {/* Logo */}
       <div className="px-6 py-5 border-b border-zinc-800">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center">
+          <div className="w-7 h-7 bg-emerald-500 rounded-lg flex items-center justify-center">
             <Code2 size={16} className="text-white" />
           </div>
           <span className="font-bold text-white text-lg tracking-tight">CodeVault</span>
@@ -41,7 +41,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
             className={cn(
               "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
               pathname === href
-                ? "bg-indigo-500/10 text-indigo-400"
+                ? "bg-emerald-500/10 text-emerald-400"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-800"
             )}
           >

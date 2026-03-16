@@ -86,7 +86,7 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="My awesome snippet..."
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
@@ -97,7 +97,7 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="What does this snippet do?"
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
@@ -108,7 +108,7 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition-colors"
           >
             {LANGUAGES.map((l) => (
               <option key={l} value={l}>{l}</option>
@@ -127,7 +127,7 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
                 className={cn(
                   "flex-1 py-2.5 text-sm font-medium transition-colors",
                   visibility === v
-                    ? "bg-indigo-500 text-white"
+                    ? "bg-emerald-500 text-white"
                     : "bg-zinc-900 text-zinc-400 hover:text-white"
                 )}
               >
@@ -147,9 +147,9 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
       {/* Tags */}
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-zinc-300">Tags</label>
-        <div className="flex flex-wrap gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 focus-within:border-indigo-500 transition-colors min-h-[44px]">
+        <div className="flex flex-wrap gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 focus-within:border-emerald-500 transition-colors min-h-[44px]">
           {tags.map((tag) => (
-            <span key={tag} className="flex items-center gap-1 bg-indigo-500/10 text-indigo-400 text-xs px-2 py-1 rounded-full">
+            <span key={tag} className="flex items-center gap-1 bg-emerald-500/10 text-emerald-400 text-xs px-2 py-1 rounded-full">
               #{tag}
               <button type="button" onClick={() => removeTag(tag)}>
                 <X size={11} />
@@ -177,7 +177,7 @@ export const SnippetForm = ({ initialData }: SnippetFormProps) => {
         </button>
         <button
           type="submit"
-          className="px-5 py-2 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium rounded-lg transition-colors"
+          className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium rounded-lg transition-colors"
         >
           {isEditing ? "Save changes" : "Create snippet"}
         </button>

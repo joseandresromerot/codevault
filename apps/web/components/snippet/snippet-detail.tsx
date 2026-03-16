@@ -37,7 +37,7 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
   if (fetching) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -47,7 +47,7 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-3">
         <p className="text-white font-semibold text-lg">Snippet not found</p>
-        <Link href="/dashboard" className="text-indigo-400 text-sm hover:underline">
+        <Link href="/dashboard" className="text-emerald-400 text-sm hover:underline">
           Back to dashboard
         </Link>
       </div>
@@ -77,7 +77,7 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
           </Link>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-500 hover:bg-indigo-400 text-white rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg transition-colors"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? "Copied!" : "Copy code"}
@@ -106,7 +106,7 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
           {snippet.tags.length > 0 && (
             <div className="flex items-center gap-2 mt-3">
               {snippet.tags.map(({ tag }: { tag: { id: string; name: string } }) => (
-                <span key={tag.id} className="text-xs text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded-full">
+                <span key={tag.id} className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
                   #{tag.name}
                 </span>
               ))}
