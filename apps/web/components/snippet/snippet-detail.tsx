@@ -1,11 +1,13 @@
 "use client"
 
-import { useQuery } from "urql"
-import { GET_SNIPPET } from "@/lib/graphql/snippets"
-import { Copy, Check, Globe, Lock, ArrowLeft, Pencil } from "lucide-react"
+import { useQuery, useMutation } from "urql"
+import { GET_SNIPPET, DELETE_SNIPPET } from "@/lib/graphql/snippets"
+import { Copy, Check, Globe, Lock, ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 const LANGUAGE_COLORS: Record<string, string> = {
   javascript: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
@@ -25,13 +27,28 @@ type SnippetDetailProps = {
 }
 
 export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
+  const router = useRouter()
   const [copied, setCopied] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [{ data, fetching }] = useQuery({ query: GET_SNIPPET, variables: { slug } })
+  const [, deleteSnippet] = useMutation(DELETE_SNIPPET)
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(data?.snippet?.code ?? "")
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleDelete = async () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true)
+      setTimeout(() => setConfirmDelete(false), 3000)
+      return
+    }
+    const { error } = await deleteSnippet({ id: data?.snippet?.id })
+    if (error) { toast.error("Failed to delete snippet"); return }
+    toast.success("Snippet deleted")
+    router.push("/dashboard")
   }
 
   if (fetching) {
@@ -68,6 +85,18 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
           Back
         </Link>
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleDelete}
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border transition-colors",
+              confirmDelete
+                ? "bg-red-500/10 border-red-500 text-red-400"
+                : "text-zinc-400 hover:text-red-400 border-zinc-700 hover:border-red-500/50"
+            )}
+          >
+            <Trash2 size={14} />
+            {confirmDelete ? "Confirm delete" : "Delete"}
+          </button>
           <Link
             href={`/dashboard/edit/${snippet.id}`}
             className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-600 rounded-lg transition-colors"

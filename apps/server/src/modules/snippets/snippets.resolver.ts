@@ -31,6 +31,16 @@ builder.queryFields((t) => ({
     resolve: (_, __, args) => snippetsService.findBySlug(args.slug),
   }),
 
+  snippetById: t.prismaField({
+    type: "Snippet",
+    nullable: true,
+    args: { id: t.arg.id({ required: true }) },
+    resolve: (_, __, args, ctx) => {
+      if (!ctx.userId) throw new Error("Unauthorized")
+      return snippetsService.findById(String(args.id), ctx.userId)
+    },
+  }),
+
   snippets: t.prismaField({
     type: ["Snippet"],
     args: {

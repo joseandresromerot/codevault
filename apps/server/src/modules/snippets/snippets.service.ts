@@ -26,6 +26,12 @@ export const snippetsService = {
       include: { user: true, tags: { include: { tag: true } }, collections: true },
     }),
 
+  findById: (id: string, userId: string) =>
+    prisma.snippet.findFirst({
+      where: { id, userId },
+      include: { user: true, tags: { include: { tag: true } }, collections: true },
+    }),
+
   findMany: (args: {
     userId: string
     search?: string | null

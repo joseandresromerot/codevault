@@ -21,6 +21,26 @@ export const GET_SNIPPETS = gql`
   }
 `
 
+export const GET_SNIPPET_BY_ID = gql`
+  query GetSnippetById($id: ID!) {
+    snippetById(id: $id) {
+      id
+      title
+      description
+      code
+      language
+      visibility
+      slug
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
 export const GET_SNIPPET = gql`
   query GetSnippet($slug: String!) {
     snippet(slug: $slug) {

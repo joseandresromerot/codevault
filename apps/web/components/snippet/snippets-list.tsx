@@ -6,8 +6,17 @@ import { SnippetCard } from "./snippet-card"
 import { Code2 } from "lucide-react"
 import Link from "next/link"
 
-export const SnippetsList = () => {
-  const [{ data, fetching }] = useQuery({ query: GET_SNIPPETS })
+type SnippetsListProps = {
+  search?: string
+  language?: string
+}
+
+export const SnippetsList = ({ search, language }: SnippetsListProps) => {
+  const [{ data, fetching }] = useQuery({
+    query: GET_SNIPPETS,
+    variables: { search: search || null, language: language || null },
+    requestPolicy: "cache-and-network",
+  })
 
   if (fetching) {
     return (
