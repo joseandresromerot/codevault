@@ -95,3 +95,27 @@ export const DELETE_SNIPPET = gql`
     deleteSnippet(id: $id)
   }
 `
+
+export const GET_PUBLIC_SNIPPETS = gql`
+  query GetPublicSnippets($search: String, $language: String, $tag: String) {
+    publicSnippets(search: $search, language: $language, tag: $tag) {
+      id
+      title
+      description
+      code
+      language
+      slug
+      createdAt
+      tags {
+        tag {
+          id
+          name
+        }
+      }
+      user {
+        name
+        image
+      }
+    }
+  }
+`
