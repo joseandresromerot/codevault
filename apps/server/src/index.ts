@@ -17,7 +17,7 @@ async function bootstrap() {
   await corsPlugin(app)
   await authPlugin(app)
 
-  app.get("/health", async () => ({ status: "ok" }))
+  app.get("/health", async () => ({ status: "ok", version: "1.0.0" }))
 
   await app.register(mercurius, {
     schema,
