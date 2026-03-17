@@ -1,6 +1,6 @@
 import { builder } from "../../lib/builder"
 
-builder.enumType("Visibility", {
+export const VisibilityRef = builder.enumType("Visibility", {
   values: {
     PUBLIC: { value: "PUBLIC" },
     PRIVATE: { value: "PRIVATE" },
@@ -34,7 +34,7 @@ builder.prismaObject("Snippet", {
     description: t.exposeString("description", { nullable: true }),
     code: t.exposeString("code"),
     language: t.exposeString("language"),
-    visibility: t.expose("visibility", { type: "Visibility" }),
+    visibility: t.expose("visibility", { type: VisibilityRef }),
     slug: t.exposeString("slug"),
     createdAt: t.field({ type: "String", resolve: (s) => s.createdAt.toISOString() }),
     updatedAt: t.field({ type: "String", resolve: (s) => s.updatedAt.toISOString() }),

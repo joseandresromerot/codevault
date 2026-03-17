@@ -1,5 +1,6 @@
 import { builder } from "../../lib/builder"
 import { snippetsService } from "./snippets.service"
+import { VisibilityRef } from "./snippets.type"
 
 const CreateSnippetInput = builder.inputType("CreateSnippetInput", {
   fields: (t) => ({
@@ -7,7 +8,7 @@ const CreateSnippetInput = builder.inputType("CreateSnippetInput", {
     description: t.string(),
     code: t.string({ required: true }),
     language: t.string({ required: true }),
-    visibility: t.field({ type: "Visibility", required: true }),
+    visibility: t.field({ type: VisibilityRef, required: true }),
     tags: t.stringList(),
   }),
 })
@@ -18,7 +19,7 @@ const UpdateSnippetInput = builder.inputType("UpdateSnippetInput", {
     description: t.string(),
     code: t.string(),
     language: t.string(),
-    visibility: t.field({ type: "Visibility" }),
+    visibility: t.field({ type: VisibilityRef }),
     tags: t.stringList(),
   }),
 })
@@ -47,13 +48,21 @@ builder.queryFields((t) => ({
       search: t.arg.string(),
       language: t.arg.string(),
       tag: t.arg.string(),
-      visibility: t.arg({ type: "Visibility" }),
+      visibility: t.arg({ type: VisibilityRef }),
       limit: t.arg.int(),
       offset: t.arg.int(),
     },
     resolve: (_, __, args, ctx) => {
       if (!ctx.userId) throw new Error("Unauthorized")
-      return snippetsService.findMany({ userId: ctx.userId, ...args })
+      return snippetsService.findMany({
+        userId: ctx.userId,
+        search: args.search,
+        language: args.language,
+        tag: args.tag,
+        visibility: args.visibility as "PUBLIC" | "PRIVATE" | null | undefined,
+        limit: args.limit,
+        offset: args.offset,
+      })
     },
   }),
 
@@ -76,7 +85,11 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: CreateSnippetInput, required: true }) },
     resolve: (_, __, args, ctx) => {
       if (!ctx.userId) throw new Error("Unauthorized")
-      return snippetsService.create(ctx.userId, args.input)
+      return snippetsService.create(ctx.userId, {
+        ...args.input,
+        visibility: args.input.visibility as "PUBLIC" | "PRIVATE",
+        tags: args.input.tags ?? undefined,
+      })
     },
   }),
 
@@ -88,7 +101,14 @@ builder.mutationFields((t) => ({
     },
     resolve: (_, __, args, ctx) => {
       if (!ctx.userId) throw new Error("Unauthorized")
-      return snippetsService.update(String(args.id), ctx.userId, args.input)
+      return snippetsService.update(String(args.id), ctx.userId, {
+        title: args.input.title ?? undefined,
+        description: args.input.description,
+        code: args.input.code ?? undefined,
+        language: args.input.language ?? undefined,
+        visibility: args.input.visibility as "PUBLIC" | "PRIVATE" | undefined,
+        tags: args.input.tags ?? undefined,
+      } as Parameters<typeof snippetsService.create>[1])
     },
   }),
 

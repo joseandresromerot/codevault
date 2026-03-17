@@ -53,7 +53,10 @@ builder.mutationFields((t) => ({
     },
     resolve: (_, __, args, ctx) => {
       if (!ctx.userId) throw new Error("Unauthorized")
-      return collectionsService.update(String(args.id), ctx.userId, args.input)
+      return collectionsService.update(String(args.id), ctx.userId, {
+        name: args.input.name ?? undefined,
+        description: args.input.description,
+      })
     },
   }),
 

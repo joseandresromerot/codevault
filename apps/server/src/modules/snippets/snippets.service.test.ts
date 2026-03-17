@@ -79,8 +79,8 @@ describe("snippetsService", () => {
     it("does not filter by language when not provided", async () => {
       vi.mocked(prisma.snippet.findMany).mockResolvedValue([])
       await snippetsService.findMany({ userId: "user-1" })
-      const call = vi.mocked(prisma.snippet.findMany).mock.calls[0][0]
-      expect((call.where as any).language).toBeUndefined()
+      const call = vi.mocked(prisma.snippet.findMany).mock.calls[0]?.[0]
+      expect((call?.where as any)?.language).toBeUndefined()
     })
   })
 
