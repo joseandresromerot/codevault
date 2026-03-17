@@ -17,9 +17,9 @@ const DashboardPage = () => {
   const [language, setLanguage] = useState("")
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-4 py-6 md:px-8 md:py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">My Snippets</h1>
           <p className="text-zinc-500 text-sm mt-1">Your personal code library</p>
@@ -34,8 +34,8 @@ const DashboardPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="relative w-full md:max-w-md">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input
             value={search}
@@ -50,7 +50,7 @@ const DashboardPage = () => {
           )}
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap overflow-x-auto pb-1">
           {LANGUAGES.map((lang) => (
             <button
               key={lang}

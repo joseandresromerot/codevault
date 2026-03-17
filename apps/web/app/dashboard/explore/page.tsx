@@ -38,7 +38,7 @@ const ExplorePage = () => {
   const snippets = data?.publicSnippets ?? []
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-4 py-6 md:px-8 md:py-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
@@ -49,8 +49,8 @@ const ExplorePage = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-6 flex-wrap">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="relative w-full md:max-w-md">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input
             value={search}

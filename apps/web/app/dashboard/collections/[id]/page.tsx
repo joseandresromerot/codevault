@@ -53,7 +53,7 @@ const CollectionDetailPage = ({ params }: Props) => {
   const collection = data?.collection
   if (!collection) {
     return (
-      <div className="px-8 py-8 flex flex-col items-center justify-center gap-3">
+      <div className="px-4 py-6 md:px-8 md:py-8 flex flex-col items-center justify-center gap-3">
         <p className="text-white font-semibold">Collection not found</p>
         <Link href="/dashboard/collections" className="text-emerald-400 text-sm hover:underline">Back to collections</Link>
       </div>
@@ -63,7 +63,7 @@ const CollectionDetailPage = ({ params }: Props) => {
   const snippets = collection.snippets.map((item: any) => item.snippet)
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-4 py-6 md:px-8 md:py-8">
       {/* Header */}
       <div className="mb-8">
         <Link

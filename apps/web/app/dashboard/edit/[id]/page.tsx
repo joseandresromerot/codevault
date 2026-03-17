@@ -36,7 +36,7 @@ const EditSnippetPage = ({ params }: Props) => {
   }
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
+    <div className="px-4 py-6 md:px-8 md:py-8 max-w-3xl">
       <div className="flex items-center gap-3 mb-8">
         <Link
           href={`/s/${snippet.slug}`}

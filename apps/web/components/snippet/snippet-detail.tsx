@@ -3,7 +3,7 @@
 import { useQuery, useMutation } from "urql"
 import { GET_SNIPPET, DELETE_SNIPPET } from "@/lib/graphql/snippets"
 import { GET_COLLECTIONS, ADD_SNIPPET_TO_COLLECTION } from "@/lib/graphql/collections"
-import { Copy, Check, Globe, Lock, ArrowLeft, Pencil, Trash2, FolderPlus, ChevronDown } from "lucide-react"
+import { Copy, Check, Globe, Lock, ArrowLeft, Pencil, Trash2, FolderPlus, ChevronDown, MoreHorizontal, X } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -32,7 +32,10 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
   const [copied, setCopied] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [showCollections, setShowCollections] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const collectionsRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const mobileCollectionsRef = useRef<HTMLDivElement>(null)
   const [{ data, fetching }] = useQuery({ query: GET_SNIPPET, variables: { slug } })
   const [{ data: collectionsData }] = useQuery({ query: GET_COLLECTIONS })
   const [, deleteSnippet] = useMutation(DELETE_SNIPPET)
@@ -40,8 +43,13 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (collectionsRef.current && !collectionsRef.current.contains(e.target as Node)) {
+      const inDesktopDropdown = collectionsRef.current?.contains(e.target as Node)
+      const inMobileSheet = mobileCollectionsRef.current?.contains(e.target as Node)
+      if (!inDesktopDropdown && !inMobileSheet) {
         setShowCollections(false)
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setShowMobileMenu(false)
       }
     }
     document.addEventListener("mousedown", handleClick)
@@ -98,15 +106,17 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Top bar */}
-      <div className="border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
+      <div className="border-b border-zinc-800 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm"
+          className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm shrink-0"
         >
           <ArrowLeft size={16} />
-          Back
+          <span className="hidden sm:inline">Back</span>
         </Link>
-        <div className="flex items-center gap-2">
+
+        {/* Desktop actions */}
+        <div className="hidden md:flex items-center gap-2">
           <button
             onClick={handleDelete}
             className={cn(
@@ -120,7 +130,6 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
             {confirmDelete ? "Confirm delete" : "Delete"}
           </button>
 
-          {/* Add to collection dropdown */}
           <div className="relative" ref={collectionsRef}>
             <button
               onClick={() => setShowCollections(!showCollections)}
@@ -167,9 +176,57 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
             {copied ? "Copied!" : "Copy code"}
           </button>
         </div>
+
+        {/* Mobile actions */}
+        <div className="flex md:hidden items-center gap-2">
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg transition-colors"
+          >
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+            {copied ? "Copied!" : "Copy"}
+          </button>
+          <div className="relative" ref={mobileMenuRef}>
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="p-1.5 text-zinc-400 hover:text-white border border-zinc-700 rounded-lg transition-colors"
+            >
+              <MoreHorizontal size={18} />
+            </button>
+            {showMobileMenu && (
+              <div className="absolute right-0 top-full mt-1 w-48 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-10 overflow-hidden">
+                <Link
+                  href={`/dashboard/edit/${snippet.id}`}
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                >
+                  <Pencil size={14} />
+                  Edit
+                </Link>
+                <button
+                  onClick={() => { setShowMobileMenu(false); setShowCollections(true) }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                >
+                  <FolderPlus size={14} />
+                  Add to collection
+                </button>
+                <div className="border-t border-zinc-800" />
+                <button
+                  onClick={() => { setShowMobileMenu(false); handleDelete() }}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors",
+                    confirmDelete ? "text-red-400 bg-red-500/10" : "text-zinc-400 hover:bg-zinc-800 hover:text-red-400"
+                  )}
+                >
+                  <Trash2 size={14} />
+                  {confirmDelete ? "Confirm delete" : "Delete"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
@@ -226,6 +283,41 @@ export const SnippetDetail = ({ slug }: SnippetDetailProps) => {
           </pre>
         </div>
       </div>
+
+      {/* Mobile collections bottom sheet */}
+      {showCollections && (
+        <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowCollections(false)} />
+          <div ref={mobileCollectionsRef} className="relative bg-zinc-900 border-t border-zinc-700 rounded-t-2xl p-4 pb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-sm">Add to collection</h3>
+              <button onClick={() => setShowCollections(false)} className="text-zinc-500 hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+            {(collectionsData?.collections ?? []).length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-zinc-500 text-sm mb-3">No collections yet</p>
+                <Link href="/dashboard/collections" className="text-emerald-400 text-sm hover:underline">
+                  Create one
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {(collectionsData?.collections ?? []).map((col: any) => (
+                  <button
+                    key={col.id}
+                    onClick={() => handleAddToCollection(col.id)}
+                    className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white rounded-lg transition-colors"
+                  >
+                    {col.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
